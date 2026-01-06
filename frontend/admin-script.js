@@ -1,7 +1,7 @@
 // Admin JavaScript for API integration
 
 // API Configuration for Render
-const API_BASE_URL = window.location.hostname.includes('render.com') 
+const API_BASE_URL = 'https://malumbo-academy-api.onrender.com/api';
     ? 'https://malumbo-academy-api.onrender.com/api'
     : window.location.hostname === 'localhost' 
         ? 'http://localhost:3000/api'
