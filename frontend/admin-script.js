@@ -1,9 +1,11 @@
 // Admin JavaScript for API integration
 
-// API Configuration
-const API_BASE_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3000/api' 
-    : 'https://your-render-app.onrender.com/api'; // Update with your Render URL
+// API Configuration for Render
+const API_BASE_URL = window.location.hostname.includes('render.com') 
+    ? 'https://malumbo-academy-api.onrender.com/api'
+    : window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000/api'
+        : '/api';
 
 // Global state
 let authToken = localStorage.getItem('adminToken');
@@ -152,12 +154,11 @@ async function handleLogin(e) {
             body: JSON.stringify({ username, password })
         });
         
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Login failed');
-        }
-        
         const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Login failed');
+        }
         
         // Save token and user data
         authToken = data.token;
@@ -193,8 +194,8 @@ function handleLogout() {
 
 // Show login screen
 function showLoginScreen() {
-    loginScreen.style.display = 'flex';
-    adminPanel.style.display = 'none';
+    if (loginScreen) loginScreen.style.display = 'flex';
+    if (adminPanel) adminPanel.style.display = 'none';
     
     // Reset login form
     if (loginForm) {
@@ -204,13 +205,15 @@ function showLoginScreen() {
 
 // Show admin panel
 function showAdminPanel() {
-    loginScreen.style.display = 'none';
-    adminPanel.style.display = 'block';
+    if (loginScreen) loginScreen.style.display = 'none';
+    if (adminPanel) adminPanel.style.display = 'block';
 }
 
 // Load dashboard statistics
 async function loadDashboardStats() {
     try {
+        showLoading('statsGrid', 'Loading statistics...');
+        
         const response = await fetch(`${API_BASE_URL}/admin/stats`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`
@@ -221,8 +224,8 @@ async function loadDashboardStats() {
             throw new Error('Failed to load statistics');
         }
         
-        const stats = await response.json();
-        renderDashboardStats(stats);
+        const data = await response.json();
+        renderDashboardStats(data.data);
     } catch (error) {
         console.error('Error loading dashboard stats:', error);
         renderError('statsGrid', 'Failed to load statistics');
@@ -260,6 +263,8 @@ function renderDashboardStats(stats) {
 // Load admin slides
 async function loadAdminSlides() {
     try {
+        showLoading('slidesList', 'Loading slides...');
+        
         const response = await fetch(`${API_BASE_URL}/admin/slides`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`
@@ -363,14 +368,15 @@ async function handleAddSlide(e) {
                 image_url: imageUrl,
                 title: title,
                 description: description,
-                display_order: parseInt(order),
+                display_order: parseInt(order) || 0,
                 is_active: isActive
             })
         });
         
+        const data = await response.json();
+        
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to add slide');
+            throw new Error(data.error || 'Failed to add slide');
         }
         
         // Reset form
@@ -380,11 +386,11 @@ async function handleAddSlide(e) {
         loadAdminSlides();
         
         // Show success message
-        alert('Slide added successfully!');
+        showNotification('Slide added successfully!', 'success');
         
     } catch (error) {
         console.error('Error adding slide:', error);
-        alert('Failed to add slide: ' + error.message);
+        showNotification('Failed to add slide: ' + error.message, 'error');
     } finally {
         // Restore button state
         addSlideText.style.display = 'inline';
@@ -414,11 +420,11 @@ async function deleteSlide(id) {
         loadAdminSlides();
         
         // Show success message
-        alert('Slide deleted successfully!');
+        showNotification('Slide deleted successfully!', 'success');
         
     } catch (error) {
         console.error('Error deleting slide:', error);
-        alert('Failed to delete slide: ' + error.message);
+        showNotification('Failed to delete slide: ' + error.message, 'error');
     }
 }
 
@@ -430,6 +436,8 @@ async function editSlide(id) {
 // Load admin events
 async function loadAdminEvents() {
     try {
+        showLoading('eventsList', 'Loading events...');
+        
         const response = await fetch(`${API_BASE_URL}/admin/events`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`
@@ -541,9 +549,10 @@ async function handleAddEvent(e) {
             })
         });
         
+        const data = await response.json();
+        
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to add event');
+            throw new Error(data.error || 'Failed to add event');
         }
         
         // Reset form
@@ -553,11 +562,11 @@ async function handleAddEvent(e) {
         loadAdminEvents();
         
         // Show success message
-        alert('Event added successfully!');
+        showNotification('Event added successfully!', 'success');
         
     } catch (error) {
         console.error('Error adding event:', error);
-        alert('Failed to add event: ' + error.message);
+        showNotification('Failed to add event: ' + error.message, 'error');
     } finally {
         // Restore button state
         addEventText.style.display = 'inline';
@@ -587,17 +596,19 @@ async function deleteEvent(id) {
         loadAdminEvents();
         
         // Show success message
-        alert('Event deleted successfully!');
+        showNotification('Event deleted successfully!', 'success');
         
     } catch (error) {
         console.error('Error deleting event:', error);
-        alert('Failed to delete event: ' + error.message);
+        showNotification('Failed to delete event: ' + error.message, 'error');
     }
 }
 
 // Load admin gallery
 async function loadAdminGallery() {
     try {
+        showLoading('galleryList', 'Loading gallery...');
+        
         const response = await fetch(`${API_BASE_URL}/admin/gallery`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`
@@ -680,9 +691,10 @@ async function handleAddGallery(e) {
             })
         });
         
+        const data = await response.json();
+        
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to add gallery image');
+            throw new Error(data.error || 'Failed to add gallery image');
         }
         
         // Reset form
@@ -692,11 +704,11 @@ async function handleAddGallery(e) {
         loadAdminGallery();
         
         // Show success message
-        alert('Image added to gallery successfully!');
+        showNotification('Image added to gallery successfully!', 'success');
         
     } catch (error) {
         console.error('Error adding gallery image:', error);
-        alert('Failed to add image: ' + error.message);
+        showNotification('Failed to add image: ' + error.message, 'error');
     } finally {
         // Restore button state
         addGalleryText.style.display = 'inline';
@@ -726,17 +738,19 @@ async function deleteGalleryImage(id) {
         loadAdminGallery();
         
         // Show success message
-        alert('Image deleted successfully!');
+        showNotification('Image deleted successfully!', 'success');
         
     } catch (error) {
         console.error('Error deleting gallery image:', error);
-        alert('Failed to delete image: ' + error.message);
+        showNotification('Failed to delete image: ' + error.message, 'error');
     }
 }
 
 // Load admin messages
 async function loadAdminMessages() {
     try {
+        showLoading('messagesList', 'Loading messages...');
+        
         const response = await fetch(`${API_BASE_URL}/admin/messages`, {
             headers: {
                 'Authorization': `Bearer ${authToken}`
@@ -785,7 +799,7 @@ function renderAdminMessages(messages) {
         const borderColor = message.is_read ? '#ccc' : 'var(--primary)';
         const phoneHtml = message.phone ? `<p><strong>Phone:</strong> ${message.phone}</p>` : '';
         const markAsReadButton = !message.is_read ? 
-            `<button class="action-btn" onclick="markMessageAsRead(${message.id})" style="background-color: var(--primary); color: white;">Mark as Read</button>` : 
+            `<button class="action-btn" onclick="markMessageAsRead(${message.id})" style="background-color: var(--primary); color: white; margin-top: 10px;">Mark as Read</button>` : 
             '';
         
         html += `
@@ -822,9 +836,12 @@ async function markMessageAsRead(id) {
         // Reload messages
         loadAdminMessages();
         
+        // Show success message
+        showNotification('Message marked as read', 'success');
+        
     } catch (error) {
         console.error('Error marking message as read:', error);
-        alert('Failed to mark message as read: ' + error.message);
+        showNotification('Failed to mark message as read: ' + error.message, 'error');
     }
 }
 
@@ -850,7 +867,7 @@ async function handleSaveSettings(e) {
         // In a real app, you would call an API endpoint to update settings
         // For now, just show a success message
         setTimeout(() => {
-            alert('Settings saved successfully! (In a real app, this would update the database)');
+            showNotification('Settings saved successfully! (Note: In production, this would update the database)', 'success');
             e.target.reset();
             
             // Restore button state
@@ -860,7 +877,7 @@ async function handleSaveSettings(e) {
         
     } catch (error) {
         console.error('Error saving settings:', error);
-        alert('Failed to save settings: ' + error.message);
+        showNotification('Failed to save settings: ' + error.message, 'error');
         
         // Restore button state
         saveSettingsText.style.display = 'inline';
@@ -868,7 +885,19 @@ async function handleSaveSettings(e) {
     }
 }
 
-// Render error message
+// Utility functions
+function showLoading(elementId, message = 'Loading...') {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>${message}</p>
+            </div>
+        `;
+    }
+}
+
 function renderError(elementId, message) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -879,6 +908,66 @@ function renderError(elementId, message) {
             </div>
         `;
     }
+}
+
+function showNotification(message, type = 'info') {
+    // Remove any existing notification
+    const existingNotification = document.getElementById('adminNotification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.id = 'adminNotification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 5px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease;
+    `;
+    
+    if (type === 'success') {
+        notification.style.backgroundColor = '#28a745';
+    } else if (type === 'error') {
+        notification.style.backgroundColor = '#dc3545';
+    } else {
+        notification.style.backgroundColor = '#17a2b8';
+    }
+    
+    notification.textContent = message;
+    
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
 }
 
 // Global functions for inline onclick handlers

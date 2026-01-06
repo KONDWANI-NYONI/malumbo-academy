@@ -8,23 +8,30 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: ['https://malumbo-academy-website.onrender.com', 'http://localhost:3000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
-// PostgreSQL connection
+// PostgreSQL connection with Render compatibility
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    ssl: {
+        rejectUnauthorized: false  // Required for Render PostgreSQL
+    }
 });
 
 // Test database connection
-pool.connect((err, client, release) => {
-    if (err) {
-        console.error('Error connecting to PostgreSQL:', err);
-    } else {
-        console.log('Connected to PostgreSQL database');
-        release();
-    }
+pool.on('connect', () => {
+    console.log('Connected to PostgreSQL database');
+});
+
+pool.on('error', (err) => {
+    console.error('Unexpected error on idle client', err);
+    process.exit(-1);
 });
 
 // JWT Secret
@@ -58,7 +65,7 @@ app.get('/api/slides', async (req, res) => {
         );
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching slides:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -73,7 +80,7 @@ app.get('/api/events', async (req, res) => {
         );
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching events:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -86,7 +93,7 @@ app.get('/api/gallery', async (req, res) => {
         );
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching gallery:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -96,17 +103,23 @@ app.post('/api/contact', async (req, res) => {
     try {
         const { name, email, phone, message } = req.body;
         
+        // Basic validation
+        if (!name || !email || !message) {
+            return res.status(400).json({ error: 'Name, email, and message are required' });
+        }
+        
         const result = await pool.query(
             'INSERT INTO contact_messages (name, email, phone, message) VALUES ($1, $2, $3, $4) RETURNING *',
             [name, email, phone, message]
         );
         
         res.status(201).json({ 
+            success: true,
             message: 'Message submitted successfully',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error submitting contact form:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -115,6 +128,10 @@ app.post('/api/contact', async (req, res) => {
 app.post('/api/admin/login', async (req, res) => {
     try {
         const { username, password } = req.body;
+        
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password required' });
+        }
         
         const result = await pool.query(
             'SELECT * FROM users WHERE username = $1',
@@ -127,8 +144,9 @@ app.post('/api/admin/login', async (req, res) => {
         
         const user = result.rows[0];
         
-        // For demo purposes only - in production, use proper hashing
-        if (password === 'malumbo2023') {
+        // For demo purposes - in production, use proper password hashing
+        // IMPORTANT: Change this in production!
+        if (password === 'malumbo2023' || password === user.password_hash) {
             // Update last login
             await pool.query(
                 'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = $1',
@@ -137,12 +155,17 @@ app.post('/api/admin/login', async (req, res) => {
             
             // Generate JWT token
             const token = jwt.sign(
-                { id: user.id, username: user.username },
+                { 
+                    id: user.id, 
+                    username: user.username,
+                    role: 'admin'
+                },
                 JWT_SECRET,
                 { expiresIn: '24h' }
             );
             
             res.json({ 
+                success: true,
                 message: 'Login successful',
                 token,
                 user: {
@@ -155,7 +178,7 @@ app.post('/api/admin/login', async (req, res) => {
             res.status(401).json({ error: 'Invalid credentials' });
         }
     } catch (err) {
-        console.error(err);
+        console.error('Login error:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -170,7 +193,7 @@ app.get('/api/admin/slides', authenticateToken, async (req, res) => {
         );
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching admin slides:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -180,18 +203,23 @@ app.post('/api/admin/slides', authenticateToken, async (req, res) => {
     try {
         const { image_url, title, description, display_order, is_active } = req.body;
         
+        if (!image_url || !title) {
+            return res.status(400).json({ error: 'Image URL and title are required' });
+        }
+        
         const result = await pool.query(
             `INSERT INTO slides (image_url, title, description, display_order, is_active) 
              VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-            [image_url, title, description, display_order || 0, is_active || true]
+            [image_url, title, description || '', display_order || 0, is_active !== false]
         );
         
         res.status(201).json({ 
+            success: true,
             message: 'Slide added successfully',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error adding slide:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -205,7 +233,7 @@ app.put('/api/admin/slides/:id', authenticateToken, async (req, res) => {
         const result = await pool.query(
             `UPDATE slides 
              SET image_url = $1, title = $2, description = $3, 
-                 display_order = $4, is_active = $5 
+                 display_order = $4, is_active = $5, updated_at = CURRENT_TIMESTAMP
              WHERE id = $6 RETURNING *`,
             [image_url, title, description, display_order, is_active, id]
         );
@@ -215,11 +243,12 @@ app.put('/api/admin/slides/:id', authenticateToken, async (req, res) => {
         }
         
         res.json({ 
+            success: true,
             message: 'Slide updated successfully',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error updating slide:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -239,11 +268,12 @@ app.delete('/api/admin/slides/:id', authenticateToken, async (req, res) => {
         }
         
         res.json({ 
+            success: true,
             message: 'Slide deleted successfully',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error deleting slide:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -256,7 +286,7 @@ app.get('/api/admin/events', authenticateToken, async (req, res) => {
         );
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching admin events:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -266,18 +296,23 @@ app.post('/api/admin/events', authenticateToken, async (req, res) => {
     try {
         const { title, description, event_date, event_time, location, is_published } = req.body;
         
+        if (!title || !description || !event_date) {
+            return res.status(400).json({ error: 'Title, description, and date are required' });
+        }
+        
         const result = await pool.query(
             `INSERT INTO events (title, description, event_date, event_time, location, is_published) 
              VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [title, description, event_date, event_time, location, is_published || true]
+            [title, description, event_date, event_time || '', location || '', is_published !== false]
         );
         
         res.status(201).json({ 
+            success: true,
             message: 'Event added successfully',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error adding event:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -301,11 +336,12 @@ app.put('/api/admin/events/:id', authenticateToken, async (req, res) => {
         }
         
         res.json({ 
+            success: true,
             message: 'Event updated successfully',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error updating event:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -325,11 +361,12 @@ app.delete('/api/admin/events/:id', authenticateToken, async (req, res) => {
         }
         
         res.json({ 
+            success: true,
             message: 'Event deleted successfully',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error deleting event:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -342,7 +379,7 @@ app.get('/api/admin/gallery', authenticateToken, async (req, res) => {
         );
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching admin gallery:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -352,18 +389,23 @@ app.post('/api/admin/gallery', authenticateToken, async (req, res) => {
     try {
         const { image_url, caption, category, is_featured } = req.body;
         
+        if (!image_url) {
+            return res.status(400).json({ error: 'Image URL is required' });
+        }
+        
         const result = await pool.query(
             `INSERT INTO gallery (image_url, caption, category, is_featured) 
              VALUES ($1, $2, $3, $4) RETURNING *`,
-            [image_url, caption, category || 'general', is_featured || false]
+            [image_url, caption || '', category || 'general', is_featured || false]
         );
         
         res.status(201).json({ 
+            success: true,
             message: 'Image added to gallery successfully',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error adding gallery image:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -383,11 +425,12 @@ app.delete('/api/admin/gallery/:id', authenticateToken, async (req, res) => {
         }
         
         res.json({ 
+            success: true,
             message: 'Image deleted successfully',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error deleting gallery image:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -400,7 +443,7 @@ app.get('/api/admin/messages', authenticateToken, async (req, res) => {
         );
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching messages:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -420,11 +463,12 @@ app.put('/api/admin/messages/:id/read', authenticateToken, async (req, res) => {
         }
         
         res.json({ 
+            success: true,
             message: 'Message marked as read',
             data: result.rows[0]
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error marking message as read:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
@@ -438,24 +482,59 @@ app.get('/api/admin/stats', authenticateToken, async (req, res) => {
         const messagesCount = await pool.query('SELECT COUNT(*) FROM contact_messages WHERE is_read = false');
         
         res.json({
-            slides: parseInt(slidesCount.rows[0].count),
-            events: parseInt(eventsCount.rows[0].count),
-            gallery: parseInt(galleryCount.rows[0].count),
-            unreadMessages: parseInt(messagesCount.rows[0].count)
+            success: true,
+            data: {
+                slides: parseInt(slidesCount.rows[0].count),
+                events: parseInt(eventsCount.rows[0].count),
+                gallery: parseInt(galleryCount.rows[0].count),
+                unreadMessages: parseInt(messagesCount.rows[0].count)
+            }
         });
     } catch (err) {
-        console.error(err);
+        console.error('Error fetching stats:', err);
         res.status(500).json({ error: 'Server error' });
     }
 });
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', timestamp: new Date().toISOString() });
+    res.json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        service: 'Malumbo Academy API',
+        version: '1.0.0'
+    });
+});
+
+// Test database connection endpoint
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT NOW() as time, version() as version');
+        res.json({
+            success: true,
+            database: 'Connected',
+            time: result.rows[0].time,
+            version: result.rows[0].version
+        });
+    } catch (err) {
+        console.error('Database connection test failed:', err);
+        res.status(500).json({ 
+            success: false,
+            error: 'Database connection failed',
+            message: err.message
+        });
+    }
+});
+
+// 404 handler for undefined routes
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ error: 'API endpoint not found' });
 });
 
 // Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Malumbo Academy API running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`CORS allowed origins: ${process.env.NODE_ENV === 'production' ? 'Production frontend' : 'Development'}`);
 });

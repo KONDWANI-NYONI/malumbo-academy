@@ -1,7 +1,9 @@
-// API Configuration
-const API_BASE_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3000/api' 
-    : 'https://your-render-app.onrender.com/api'; // Update with your Render URL
+// API Configuration for Render
+const API_BASE_URL = window.location.hostname.includes('render.com') 
+    ? 'https://malumbo-academy-api.onrender.com/api'
+    : window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000/api'
+        : '/api';
 
 // Global state
 let currentSlide = 0;
@@ -97,16 +99,18 @@ function setupEventListeners() {
 // Load slides from API
 async function loadSlides() {
     try {
+        showLoading(slideshow, 'Loading slides...');
+        
         const response = await fetch(`${API_BASE_URL}/slides`);
         
         if (!response.ok) {
-            throw new Error('Failed to load slides');
+            throw new Error(`Failed to load slides: ${response.status}`);
         }
         
         const slides = await response.json();
         
         if (slides.length === 0) {
-            renderNoSlides();
+            renderNoContent(slideshow, 'slides', 'No slides available yet');
             return;
         }
         
@@ -165,17 +169,6 @@ function renderSlideshow(slides) {
         
         slideshow.appendChild(controls);
     }
-}
-
-// No slides state
-function renderNoSlides() {
-    slideshow.innerHTML = `
-        <div class="empty-state">
-            <i class="fas fa-images"></i>
-            <h3>No Slides Available</h3>
-            <p>Check back later for updates</p>
-        </div>
-    `;
 }
 
 // Slideshow functions
@@ -248,16 +241,18 @@ function startSlideshow() {
 // Load events from API
 async function loadEvents() {
     try {
+        showLoading(eventsContainer, 'Loading events...');
+        
         const response = await fetch(`${API_BASE_URL}/events`);
         
         if (!response.ok) {
-            throw new Error('Failed to load events');
+            throw new Error(`Failed to load events: ${response.status}`);
         }
         
         const events = await response.json();
         
         if (events.length === 0) {
-            renderNoEvents();
+            renderNoContent(eventsContainer, 'events', 'No upcoming events scheduled');
             return;
         }
         
@@ -301,30 +296,21 @@ function renderEvents(events) {
     });
 }
 
-// No events state
-function renderNoEvents() {
-    eventsContainer.innerHTML = `
-        <div class="empty-state">
-            <i class="fas fa-calendar-alt"></i>
-            <h3>No Upcoming Events</h3>
-            <p>Check back later for upcoming events</p>
-        </div>
-    `;
-}
-
 // Load gallery from API
 async function loadGallery() {
     try {
+        showLoading(galleryContainer, 'Loading gallery...');
+        
         const response = await fetch(`${API_BASE_URL}/gallery`);
         
         if (!response.ok) {
-            throw new Error('Failed to load gallery');
+            throw new Error(`Failed to load gallery: ${response.status}`);
         }
         
         const gallery = await response.json();
         
         if (gallery.length === 0) {
-            renderNoGallery();
+            renderNoContent(galleryContainer, 'gallery', 'No gallery images yet');
             return;
         }
         
@@ -354,22 +340,10 @@ function renderGallery(gallery) {
     });
 }
 
-// No gallery state
-function renderNoGallery() {
-    galleryContainer.innerHTML = `
-        <div class="empty-state">
-            <i class="fas fa-camera"></i>
-            <h3>No Gallery Images</h3>
-            <p>Check back later for gallery updates</p>
-        </div>
-    `;
-}
-
 // Open image modal
 function openImageModal(imageUrl, caption) {
     document.getElementById('modalImage').src = imageUrl;
-    const captionElement = document.getElementById('modalCaption');
-    captionElement.textContent = caption || '';
+    document.getElementById('modalCaption').textContent = caption || '';
     imageModal.style.display = 'flex';
 }
 
@@ -383,13 +357,11 @@ async function submitContactForm(e) {
     const message = document.getElementById('message').value;
     
     const submitBtn = contactForm.querySelector('button[type="submit"]');
-    const submitText = document.getElementById('submitText');
-    const submitSpinner = document.getElementById('submitSpinner');
     const formMessage = document.getElementById('formMessage');
     
     // Show loading state
-    submitText.style.display = 'none';
-    submitSpinner.style.display = 'inline-block';
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     formMessage.style.display = 'none';
     
     try {
@@ -401,12 +373,14 @@ async function submitContactForm(e) {
             body: JSON.stringify({ name, email, phone, message })
         });
         
+        const data = await response.json();
+        
         if (!response.ok) {
-            throw new Error('Failed to submit message');
+            throw new Error(data.error || 'Failed to submit message');
         }
         
         // Show success message
-        formMessage.textContent = 'Thank you for your message! We will contact you soon.';
+        formMessage.textContent = data.message || 'Thank you for your message! We will contact you soon.';
         formMessage.className = 'form-message success';
         formMessage.style.display = 'block';
         
@@ -420,23 +394,51 @@ async function submitContactForm(e) {
         console.error('Error submitting contact form:', error);
         
         // Show error message
-        formMessage.textContent = 'Failed to submit message. Please try again.';
+        formMessage.textContent = error.message || 'Failed to submit message. Please try again.';
         formMessage.className = 'form-message error';
         formMessage.style.display = 'block';
         
     } finally {
         // Restore button state
-        submitText.style.display = 'inline';
-        submitSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send Message';
     }
 }
 
-// Render error message
+// Utility functions
+function showLoading(container, message = 'Loading...') {
+    container.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>${message}</p>
+        </div>
+    `;
+}
+
+function renderNoContent(container, type, message) {
+    const icons = {
+        slides: 'images',
+        events: 'calendar-alt',
+        gallery: 'camera'
+    };
+    
+    container.innerHTML = `
+        <div class="empty-state">
+            <i class="fas fa-${icons[type] || 'info-circle'}"></i>
+            <h3>No ${type} Available</h3>
+            <p>${message}</p>
+        </div>
+    `;
+}
+
 function renderError(container, message) {
     container.innerHTML = `
         <div class="error-message">
             <i class="fas fa-exclamation-triangle"></i>
             <p>${message}</p>
+            <button onclick="window.location.reload()" class="btn" style="margin-top: 10px;">
+                <i class="fas fa-redo"></i> Retry
+            </button>
         </div>
     `;
 }
@@ -451,3 +453,78 @@ async function checkApiHealth() {
         return false;
     }
 }
+
+// Add CSS for loading and error states (add to your style.css)
+const style = document.createElement('style');
+style.textContent = `
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--gray);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(44, 90, 160, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary);
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.error-message {
+    background-color: #fee;
+    color: #c00;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: center;
+    border: 1px solid #fcc;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--gray);
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    grid-column: 1 / -1;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.form-message {
+    padding: 12px 15px;
+    border-radius: 5px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.form-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.form-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+`;
+document.head.appendChild(style);
