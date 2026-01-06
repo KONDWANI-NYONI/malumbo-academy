@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: malumbo-academy-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: malumbo-academy-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: NODE_ENV
+        value: production
+
+databases:
+  - name: malumbo-academy-db
+    plan: free
+    databaseName: malumbo_academy
+    user: malumbo_admin
