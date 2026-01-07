@@ -1,34 +1,20 @@
 # Malumbo Christian Academy Website
 
-A complete school website with admin panel, PostgreSQL database, and Node.js backend, ready to deploy on Render.
+A complete school website with admin panel, PostgreSQL database, and Node.js backend.
 
-## 🚀 Live Preview
-- Public Website: [View Preview](preview.html)
-- Admin Panel: [View Preview](admin.html) (Use credentials: admin/malumbo2023)
+## Live Demo
+- Website: https://malumbo-academy-website.onrender.com
+- Admin Panel: https://malumbo-academy-website.onrender.com/admin.html
+- API: https://malumbo-academy-api.onrender.com/api
 
-## 📋 Features
-
-### Public Website
+## Features
 - ✅ Responsive design for all devices
 - ✅ Dynamic homepage slideshow
 - ✅ Upcoming events calendar
-- ✅ School gallery with images
+- ✅ School image gallery
 - ✅ Contact form
-- ✅ Mobile-friendly navigation
-
-### Admin Panel
-- ✅ Secure login system
-- ✅ Manage homepage slideshow
-- ✅ Add/edit/delete school events
-- ✅ Upload and manage gallery images
-- ✅ View contact messages
-- ✅ Dashboard with statistics
-
-### Backend
-- ✅ RESTful API with Node.js/Express
+- ✅ Admin panel for content management
 - ✅ PostgreSQL database
 - ✅ JWT authentication
-- ✅ CRUD operations for all content
-- ✅ Ready for Render deployment
 
-## 🏗️ Project Structure
+## Project Structure

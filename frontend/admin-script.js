@@ -2,10 +2,6 @@
 
 // API Configuration for Render
 const API_BASE_URL = 'https://malumbo-academy-api.onrender.com/api';
-    ? 'https://malumbo-academy-api.onrender.com/api'
-    : window.location.hostname === 'localhost' 
-        ? 'http://localhost:3000/api'
-        : '/api';
 
 // Global state
 let authToken = localStorage.getItem('adminToken');
@@ -428,7 +424,7 @@ async function deleteSlide(id) {
     }
 }
 
-// Edit slide (simplified - would need more implementation)
+// Edit slide function (called from HTML onclick)
 async function editSlide(id) {
     alert('Edit functionality would be implemented here. For now, delete and recreate the slide.');
 }
@@ -602,6 +598,11 @@ async function deleteEvent(id) {
         console.error('Error deleting event:', error);
         showNotification('Failed to delete event: ' + error.message, 'error');
     }
+}
+
+// Edit event function (called from HTML onclick)
+async function editEvent(id) {
+    alert('Edit functionality would be implemented here. For now, delete and recreate the event.');
 }
 
 // Load admin gallery
@@ -970,7 +971,7 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-// Global functions for inline onclick handlers
+// Make functions globally available for onclick handlers
 window.editSlide = editSlide;
 window.deleteSlide = deleteSlide;
 window.editEvent = editEvent;

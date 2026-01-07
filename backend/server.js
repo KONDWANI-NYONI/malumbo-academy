@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 require('dotenv').config();
@@ -20,7 +19,7 @@ app.use(express.json());
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false  // Required for Render PostgreSQL
+        rejectUnauthorized: false
     }
 });
 
@@ -144,8 +143,7 @@ app.post('/api/admin/login', async (req, res) => {
         
         const user = result.rows[0];
         
-        // For demo purposes - in production, use proper password hashing
-        // IMPORTANT: Change this in production!
+        // For demo purposes
         if (password === 'malumbo2023' || password === user.password_hash) {
             // Update last login
             await pool.query(
@@ -536,5 +534,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Malumbo Academy API running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`CORS allowed origins: ${process.env.NODE_ENV === 'production' ? 'Production frontend' : 'Development'}`);
 });
