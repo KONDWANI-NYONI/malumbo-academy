@@ -1,17 +1,6 @@
-// API Configuration
 const API_BASE_URL = window.location.hostname.includes('render.com') 
     ? 'https://malumbo-academy-api.onrender.com/api'
     : 'http://localhost:5000/api';
-
-// DOM Elements
-const loginForm = document.getElementById('login-form');
-const loginError = document.getElementById('login-error');
-const adminPanel = document.getElementById('admin-panel');
-const slidesList = document.getElementById('slides-list');
-const addSlideForm = document.getElementById('add-slide-form');
-const logoutBtn = document.getElementById('logout-btn');
-const formMessage = document.getElementById('form-message');
-const slidesCount = document.getElementById('slides-count');
 
 // Login function
 async function handleLogin(event) {
@@ -19,109 +8,66 @@ async function handleLogin(event) {
     
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    
-    loginError.textContent = '';
-    loginError.className = 'message';
+    const errorDiv = document.getElementById('login-error');
     
     try {
         const response = await fetch(`${API_BASE_URL}/admin/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
         });
         
         const data = await response.json();
         
         if (data.success) {
-            // Store login status
             localStorage.setItem('adminLoggedIn', 'true');
-            localStorage.setItem('adminUsername', username);
-            
-            // Show success message
-            loginError.textContent = '✅ Login successful!';
-            loginError.className = 'message success';
-            
-            // Show admin panel after delay
-            setTimeout(() => {
-                showAdminPanel();
-                loadSlides();
-            }, 1000);
+            showAdminPanel();
+            loadSlides();
         } else {
-            loginError.textContent = data.message || 'Login failed. Please try again.';
-            loginError.className = 'message error';
+            errorDiv.textContent = data.message;
+            errorDiv.style.color = 'red';
         }
     } catch (error) {
+        errorDiv.textContent = 'Connection error. Check console.';
+        errorDiv.style.color = 'red';
         console.error('Login error:', error);
-        loginError.innerHTML = `
-            <div class="message error">
-                <p><strong>Connection Error</strong></p>
-                <p>Please check:</p>
-                <ul>
-                    <li>Backend server is running at: ${API_BASE_URL}</li>
-                    <li>Check browser console (F12) for details</li>
-                </ul>
-            </div>
-        `;
     }
 }
 
 // Show admin panel
 function showAdminPanel() {
     document.getElementById('login-container').style.display = 'none';
-    adminPanel.style.display = 'block';
-    
-    // Show username
-    const username = localStorage.getItem('adminUsername') || 'Admin';
-    document.getElementById('admin-welcome').textContent = `Welcome, ${username}!`;
+    document.getElementById('admin-panel').style.display = 'block';
 }
 
-// Load slides for admin
+// Load slides
 async function loadSlides() {
     try {
         const response = await fetch(`${API_BASE_URL}/admin/slides`);
-        
-        if (!response.ok) {
-            throw new Error(`Failed to fetch slides: ${response.status}`);
-        }
-        
         const slides = await response.json();
-        slidesCount.textContent = slides.length;
         
-        if (slides.length === 0) {
-            slidesList.innerHTML = '<div class="message">No slides found. Add your first slide!</div>';
-            return;
-        }
+        const container = document.getElementById('slides-list');
+        const countSpan = document.getElementById('slides-count');
         
-        slidesList.innerHTML = slides.map(slide => `
-            <div class="slide-item">
-                <img src="${slide.image_url}" alt="${slide.title}" 
-                     onerror="this.src='https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80'">
-                <div class="slide-info">
+        countSpan.textContent = slides.length;
+        
+        container.innerHTML = slides.map(slide => `
+            <div class="slide-item" data-id="${slide.id}">
+                <img src="${slide.image_url}" alt="${slide.title}" width="100">
+                <div>
                     <h4>${slide.title}</h4>
                     <p>${slide.description || 'No description'}</p>
-                    <small>ID: ${slide.id} | Created: ${new Date(slide.created_at).toLocaleDateString()}</small>
+                    <small>ID: ${slide.id}</small>
                 </div>
-                <button onclick="deleteSlide(${slide.id})" class="btn btn-danger" style="width: auto;">
-                    <i class="fas fa-trash"></i> Delete
-                </button>
+                <button onclick="deleteSlide(${slide.id})" class="delete-btn">Delete</button>
             </div>
         `).join('');
     } catch (error) {
         console.error('Error loading slides:', error);
-        slidesList.innerHTML = `
-            <div class="message error">
-                <p><strong>Error loading slides:</strong> ${error.message}</p>
-                <button onclick="loadSlides()" class="btn" style="width: auto; margin-top: 10px;">
-                    <i class="fas fa-redo"></i> Retry
-                </button>
-            </div>
-        `;
     }
 }
 
-// Add new slide
+// Add slide
 async function handleAddSlide(event) {
     event.preventDefault();
     
@@ -129,53 +75,31 @@ async function handleAddSlide(event) {
     const description = document.getElementById('slide-description').value;
     const imageUrl = document.getElementById('slide-image').value;
     
-    if (!title || !imageUrl) {
-        formMessage.textContent = 'Please fill in at least Title and Image URL';
-        formMessage.className = 'message error';
-        return;
-    }
-    
     try {
         const response = await fetch(`${API_BASE_URL}/admin/slides`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-                title, 
-                description, 
-                image_url: imageUrl 
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, description, image_url: imageUrl })
         });
         
         const data = await response.json();
         
         if (data.success) {
-            formMessage.textContent = '✅ Slide added successfully!';
-            formMessage.className = 'message success';
-            
-            // Clear form
-            addSlideForm.reset();
-            
-            // Reload slides
-            setTimeout(() => {
-                formMessage.textContent = '';
-                loadSlides();
-            }, 2000);
+            alert('Slide added successfully!');
+            document.getElementById('add-slide-form').reset();
+            loadSlides();
         } else {
-            formMessage.textContent = data.message || 'Failed to add slide';
-            formMessage.className = 'message error';
+            alert('Failed to add slide: ' + data.message);
         }
     } catch (error) {
         console.error('Error adding slide:', error);
-        formMessage.textContent = 'Error adding slide. Check console for details.';
-        formMessage.className = 'message error';
+        alert('Error adding slide');
     }
 }
 
-// Delete slide
+// Delete slide - FIXED
 async function deleteSlide(id) {
-    if (!confirm('Are you sure you want to delete this slide?')) return;
+    if (!confirm('Delete this slide?')) return;
     
     try {
         const response = await fetch(`${API_BASE_URL}/admin/slides/${id}`, {
@@ -185,10 +109,17 @@ async function deleteSlide(id) {
         const data = await response.json();
         
         if (data.success) {
-            alert('✅ Slide deleted successfully!');
-            loadSlides(); // Refresh the list
+            // Remove from UI
+            const item = document.querySelector(`.slide-item[data-id="${id}"]`);
+            if (item) item.remove();
+            
+            // Update count
+            const count = document.querySelectorAll('.slide-item').length;
+            document.getElementById('slides-count').textContent = count;
+            
+            alert('Slide deleted!');
         } else {
-            alert(data.message || 'Failed to delete slide');
+            alert('Failed to delete: ' + data.message);
         }
     } catch (error) {
         console.error('Error deleting slide:', error);
@@ -196,45 +127,29 @@ async function deleteSlide(id) {
     }
 }
 
-// Logout function
+// Logout
 function handleLogout() {
-    if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem('adminLoggedIn');
-        localStorage.removeItem('adminUsername');
-        adminPanel.style.display = 'none';
-        document.getElementById('login-container').style.display = 'block';
-        if (loginForm) loginForm.reset();
-        loginError.textContent = '';
-    }
+    localStorage.removeItem('adminLoggedIn');
+    document.getElementById('admin-panel').style.display = 'none';
+    document.getElementById('login-container').style.display = 'block';
 }
 
-// Check if already logged in
-function checkLoginStatus() {
-    const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-    
-    if (isLoggedIn) {
-        showAdminPanel();
-        loadSlides();
-    }
+// Check login status
+if (localStorage.getItem('adminLoggedIn') === 'true') {
+    showAdminPanel();
+    loadSlides();
 }
 
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    checkLoginStatus();
+// Event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('login-form');
+    const addForm = document.getElementById('add-slide-form');
+    const logoutBtn = document.getElementById('logout-btn');
     
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-    }
-    
-    if (addSlideForm) {
-        addSlideForm.addEventListener('submit', handleAddSlide);
-    }
-    
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
-    }
+    if (loginForm) loginForm.addEventListener('submit', handleLogin);
+    if (addForm) addForm.addEventListener('submit', handleAddSlide);
+    if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
 });
 
-// Make functions available globally
+// Make functions global
 window.deleteSlide = deleteSlide;
-window.loadSlides = loadSlides;

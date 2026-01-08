@@ -3,211 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Malumbo Academy</title>
+    <title>Admin Panel</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .admin-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 800px;
+            margin: 2rem auto;
             padding: 2rem;
-            min-height: 80vh;
         }
         
-        .login-container {
+        .login-container, .admin-panel {
             background: white;
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            max-width: 400px;
-            margin: 3rem auto;
-        }
-        
-        .login-container h2 {
-            color: #2c3e50;
-            margin-bottom: 2rem;
-            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
+            margin-bottom: 5px;
             font-weight: bold;
         }
         
-        .form-group input {
+        .form-group input, .form-group textarea {
             width: 100%;
-            padding: 0.8rem;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 1rem;
         }
         
-        .btn {
-            width: 100%;
-            background: #2c3e50;
+        button {
+            background: #3498db;
             color: white;
-            padding: 1rem;
             border: none;
+            padding: 10px 20px;
             border-radius: 5px;
-            font-size: 1.1rem;
             cursor: pointer;
-            transition: background 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
         }
         
-        .btn:hover {
-            background: #1a252f;
-        }
-        
-        .btn-success {
-            background: #27ae60;
-        }
-        
-        .btn-success:hover {
-            background: #219653;
-        }
-        
-        .btn-danger {
+        .delete-btn {
             background: #e74c3c;
         }
         
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-        
-        #login-error {
-            margin-top: 1rem;
-            padding: 0.8rem;
-            border-radius: 5px;
-            text-align: center;
-        }
-        
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #eee;
-        }
-        
-        .admin-section {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        
-        .admin-section h3 {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .add-slide-form {
-            display: grid;
-            gap: 1rem;
-        }
-        
-        .slides-list {
-            margin-top: 1rem;
-        }
-        
         .slide-item {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: transform 0.2s;
-        }
-        
-        .slide-item:hover {
-            transform: translateX(5px);
-            border-color: #3498db;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
         
         .slide-item img {
             width: 100px;
             height: 100px;
             object-fit: cover;
-            border-radius: 4px;
-        }
-        
-        .slide-info {
-            flex: 1;
-        }
-        
-        .slide-info h4 {
-            margin: 0 0 5px 0;
-            color: #2c3e50;
-        }
-        
-        .slide-info p {
-            margin: 0 0 5px 0;
-            color: #666;
-        }
-        
-        .slide-info small {
-            color: #999;
-        }
-        
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            color: #3498db;
-            text-decoration: none;
-            margin-top: 2rem;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        
-        textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
             border-radius: 5px;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 100px;
         }
         
-        .message {
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            text-align: center;
-        }
-        
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        #login-error {
+            color: red;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -215,106 +76,64 @@
     <nav class="navbar">
         <div class="logo">
             <i class="fas fa-graduation-cap"></i>
-            <h1>Malumbo Academy Admin</h1>
+            <h1>Admin Panel</h1>
         </div>
+        <a href="index.html">Back to Site</a>
     </nav>
 
     <div class="admin-container">
-        <!-- Login Form -->
+        <!-- Login -->
         <div id="login-container">
             <div class="login-container">
-                <h2><i class="fas fa-lock"></i> Admin Login</h2>
+                <h2>Admin Login</h2>
                 <form id="login-form">
                     <div class="form-group">
-                        <label for="username"><i class="fas fa-user"></i> Username</label>
-                        <input type="text" id="username" name="username" required 
-                               placeholder="Enter username" value="admin">
+                        <label>Username</label>
+                        <input type="text" id="username" value="admin" required>
                     </div>
-                    
                     <div class="form-group">
-                        <label for="password"><i class="fas fa-key"></i> Password</label>
-                        <input type="password" id="password" name="password" required 
-                               placeholder="Enter password" value="admin123">
+                        <label>Password</label>
+                        <input type="password" id="password" value="admin123" required>
                     </div>
-                    
-                    <button type="submit" class="btn">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
-                    
-                    <div id="login-error" class="message"></div>
+                    <button type="submit">Login</button>
+                    <div id="login-error"></div>
+                    <p><small>Default: admin / admin123</small></p>
                 </form>
-                
-                <a href="index.html" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Back to Main Site
-                </a>
-                
-                <div style="margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
-                    <p style="color: #666; font-size: 0.9rem; text-align: center;">
-                        <strong>Default Credentials:</strong><br>
-                        Username: <code>admin</code><br>
-                        Password: <code>admin123</code>
-                    </p>
-                </div>
             </div>
         </div>
 
-        <!-- Admin Panel (Hidden by default) -->
+        <!-- Admin Panel -->
         <div id="admin-panel" style="display: none;">
-            <div class="admin-header">
-                <div>
-                    <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
-                    <p id="admin-welcome">Welcome, Admin!</p>
+            <div class="admin-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>Manage Slides</h2>
+                    <button onclick="handleLogout()">Logout</button>
                 </div>
-                <button id="logout-btn" class="btn btn-danger">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
 
-            <!-- Add Slide Form -->
-            <div class="admin-section">
-                <h3><i class="fas fa-plus-circle"></i> Add New Slide</h3>
-                <form id="add-slide-form" class="add-slide-form">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label for="slide-title">Slide Title *</label>
-                            <input type="text" id="slide-title" required 
-                                   placeholder="Enter slide title">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="slide-image">Image URL *</label>
-                            <input type="url" id="slide-image" required 
-                                   placeholder="https://example.com/image.jpg">
-                        </div>
-                    </div>
-                    
+                <!-- Add Slide Form -->
+                <h3>Add New Slide</h3>
+                <form id="add-slide-form">
                     <div class="form-group">
-                        <label for="slide-description">Description</label>
-                        <textarea id="slide-description" 
-                                  placeholder="Enter slide description (optional)"></textarea>
+                        <label>Title</label>
+                        <input type="text" id="slide-title" required>
                     </div>
-                    
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-save"></i> Add Slide
-                    </button>
-                    
-                    <div id="form-message" class="message"></div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="slide-description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Image URL</label>
+                        <input type="url" id="slide-image" required>
+                    </div>
+                    <button type="submit">Add Slide</button>
                 </form>
-            </div>
 
-            <!-- Slides List -->
-            <div class="admin-section">
-                <h3><i class="fas fa-images"></i> Manage Slides</h3>
-                <p>Total slides: <span id="slides-count">0</span></p>
-                
-                <div id="slides-list" class="slides-list">
-                    <div class="loading">Loading slides...</div>
+                <!-- Slides List -->
+                <h3 style="margin-top: 3rem;">Current Slides (<span id="slides-count">0</span>)</h3>
+                <div id="slides-list">
+                    <!-- Slides loaded here -->
                 </div>
             </div>
-            
-            <a href="index.html" class="back-link">
-                <i class="fas fa-arrow-left"></i> Back to Main Site
-            </a>
         </div>
     </div>
 

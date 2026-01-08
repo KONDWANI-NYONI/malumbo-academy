@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// In-memory database (no PostgreSQL needed for now)
+// In-memory database
 let slides = [
   {
     id: 1,
@@ -19,7 +19,7 @@ let slides = [
     id: 2,
     title: "Interactive Learning",
     description: "Engaging classroom experiences",
-    image_url: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&q=80",
+    image_url: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80",
     created_at: new Date().toISOString()
   },
   {
@@ -30,6 +30,11 @@ let slides = [
     created_at: new Date().toISOString()
   }
 ];
+
+// Helper function to get next ID
+function getNextId() {
+  return slides.length > 0 ? Math.max(...slides.map(s => s.id)) + 1 : 1;
+}
 
 // ========== PUBLIC ROUTES ==========
 
@@ -52,7 +57,7 @@ app.get('/api/slides', (req, res) => {
 
 // ========== ADMIN ROUTES ==========
 
-// Admin login (simple authentication)
+// Admin login
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
   
@@ -63,7 +68,6 @@ app.post('/api/admin/login', (req, res) => {
     });
   }
   
-  // Simple hardcoded credentials
   if (username === 'admin' && password === 'admin123') {
     return res.json({
       success: true,
@@ -95,7 +99,7 @@ app.post('/api/admin/slides', (req, res) => {
   }
   
   const newSlide = {
-    id: slides.length + 1,
+    id: getNextId(),
     title,
     description: description || '',
     image_url,
@@ -111,40 +115,89 @@ app.post('/api/admin/slides', (req, res) => {
   });
 });
 
-// Delete slide
-// Delete slide endpoint (should be in your backend)
-app.delete('/api/admin/slides/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        
-        // If using in-memory database
-        const initialLength = slides.length;
-        slides = slides.filter(slide => slide.id !== parseInt(id));
-        
-        if (slides.length < initialLength) {
-            res.json({
-                success: true,
-                message: 'Slide deleted successfully'
-            });
-        } else {
-            res.status(404).json({
-                success: false,
-                message: 'Slide not found'
-            });
-        }
-    } catch (error) {
-        console.error('Error deleting slide:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Failed to delete slide' 
-        });
+// FIXED: Delete slide endpoint
+app.delete('/api/admin/slides/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const slideId = parseInt(id);
+    
+    if (isNaN(slideId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid slide ID'
+      });
     }
+    
+    const initialLength = slides.length;
+    slides = slides.filter(slide => slide.id !== slideId);
+    
+    if (slides.length < initialLength) {
+      res.json({
+        success: true,
+        message: 'Slide deleted successfully',
+        remainingSlides: slides.length
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'Slide not found'
+      });
+    }
+  } catch (error) {
+    console.error('Error deleting slide:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to delete slide'
+    });
+  }
 });
 
-// Serve frontend files (for combined deployment)
+// Test endpoint
+app.get('/api/test-db', (req, res) => {
+  res.json({
+    success: true,
+    slidesCount: slides.length,
+    slides: slides
+  });
+});
+
+// Reset database
+app.get('/api/reset-db', (req, res) => {
+  slides = [
+    {
+      id: 1,
+      title: "Welcome to Malumbo Academy",
+      description: "Quality education for all students",
+      image_url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80",
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 2,
+      title: "Interactive Learning",
+      description: "Engaging classroom experiences",
+      image_url: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80",
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 3,
+      title: "Expert Teachers",
+      description: "Qualified and experienced educators",
+      image_url: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&q=80",
+      created_at: new Date().toISOString()
+    }
+  ];
+  
+  res.json({
+    success: true,
+    message: 'Database reset successfully',
+    slidesCount: slides.length
+  });
+});
+
+// Serve frontend files
 app.use(express.static('../frontend'));
 
-// Fallback route for SPA
+// Fallback route
 app.get('*', (req, res) => {
   res.sendFile('index.html', { root: '../frontend' });
 });
@@ -152,9 +205,8 @@ app.get('*', (req, res) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Malumbo Academy API running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`API URL: http://localhost:${PORT}`);
-  console.log(`Frontend: http://localhost:${PORT}`);
-  console.log(`Admin: http://localhost:${PORT}/admin.html`);
+  console.log(`🚀 Malumbo Academy API running on port ${PORT}`);
+  console.log(`📊 Total slides: ${slides.length}`);
+  console.log(`🌐 Frontend: http://localhost:${PORT}`);
+  console.log(`🔧 Admin: http://localhost:${PORT}/admin.html`);
 });
