@@ -3,102 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malumbo Academy</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <header>
-        <nav class="navbar">
-            <div class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                <h1>Malumbo Academy</h1>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
-                <li><a href="#courses"><i class="fas fa-book"></i> Courses</a></li>
-                <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
-                <li><a href="admin.html" class="admin-btn"><i class="fas fa-lock"></i> Admin</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h2>Welcome to Malumbo Academy</h2>
-                <p>Excellence in Education Since 2023</p>
-                <a href="#courses" class="cta-button">Explore Courses</a>
-            </div>
-        </section>
-
-        <section id="slides" class="slides-section">
-            <h2><i class="fas fa-images"></i> Our Gallery</h2>
-            <p>Take a look at our campus and activities</p>
-            
-            <div id="loading" style="color: #666; text-align: center; padding: 20px;">
-                Loading slides...
-            </div>
-            
-            <div id="error" style="color: #dc3545; text-align: center; padding: 20px;"></div>
-            
-            <div id="slides-container" class="slides-container">
-                <!-- Slides will be loaded here by JavaScript -->
-            </div>
-        </section>
-
-        <section id="about" class="about-section">
-            <h2><i class="fas fa-school"></i> About Us</h2>
-            <p>Malumbo Academy is dedicated to providing quality education to students of all ages. Our mission is to empower students with knowledge and skills for the future.</p>
-        </section>
-
-        <section id="courses" class="courses-section">
-            <h2><i class="fas fa-graduation-cap"></i> Our Courses</h2>
-            <div class="courses-grid">
-                <div class="course-card">
-                    <i class="fas fa-laptop-code"></i>
-                    <h3>Computer Science</h3>
-                    <p>Learn programming, web development, and software engineering.</p>
-                </div>
-                <div class="course-card">
-                    <i class="fas fa-calculator"></i>
-                    <h3>Mathematics</h3>
-                    <p>Advanced mathematics and problem-solving skills.</p>
-                </div>
-                <div class="course-card">
-                    <i class="fas fa-flask"></i>
-                    <h3>Science</h3>
-                    <p>Physics, Chemistry, and Biology laboratory courses.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="contact-section">
-            <h2><i class="fas fa-address-book"></i> Contact Us</h2>
-            <p>Email: info@malumboacademy.edu</p>
-            <p>Phone: +260 123 456 789</p>
-            <p>Address: 123 Education Street, Lusaka, Zambia</p>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2023 Malumbo Academy. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="#privacy">Privacy Policy</a>
-            <a href="#terms">Terms of Service</a>
-            <a href="#sitemap">Sitemap</a>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Malumbo Academy - Excellence in Education</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -113,80 +17,334 @@
         <ul class="nav-links">
             <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
             <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
-            <li><a href="#slides"><i class="fas fa-images"></i> Gallery</a></li>
             <li><a href="#courses"><i class="fas fa-book"></i> Courses</a></li>
+            <li><a href="#gallery"><i class="fas fa-images"></i> Gallery</a></li>
             <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
             <li><a href="admin.html" class="admin-btn"><i class="fas fa-lock"></i> Admin</a></li>
         </ul>
+        <div class="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Slideshow -->
     <section id="home" class="hero">
-        <div class="hero-content">
-            <h2>Welcome to Malumbo Academy</h2>
-            <p>Excellence in Education Since 2023</p>
-            <a href="#courses" class="cta-button">Explore Our Courses</a>
+        <div class="slideshow-container">
+            <!-- Slide 1 -->
+            <div class="slide active">
+                <div class="slide-image" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600&q=80');"></div>
+                <div class="slide-content">
+                    <h2>Welcome to Malumbo Academy</h2>
+                    <p>Where Excellence in Education Meets Innovation</p>
+                    <a href="#courses" class="cta-button">Explore Our Programs</a>
+                </div>
+            </div>
+            
+            <!-- Slide 2 -->
+            <div class="slide">
+                <div class="slide-image" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1600&q=80');"></div>
+                <div class="slide-content">
+                    <h2>Quality Education</h2>
+                    <p>Developing Future Leaders Through Innovative Learning</p>
+                    <a href="#about" class="cta-button">Learn About Us</a>
+                </div>
+            </div>
+            
+            <!-- Slide 3 -->
+            <div class="slide">
+                <div class="slide-image" style="background-image: url('https://images.unsplash.com/photo-1524178234883-043d5c3f3cf4?w=1600&q=80');"></div>
+                <div class="slide-content">
+                    <h2>State-of-the-Art Facilities</h2>
+                    <p>Modern Learning Environment for Optimal Growth</p>
+                    <a href="#gallery" class="cta-button">View Gallery</a>
+                </div>
+            </div>
+            
+            <!-- Navigation Dots -->
+            <div class="slideshow-dots">
+                <span class="dot active" data-slide="0"></span>
+                <span class="dot" data-slide="1"></span>
+                <span class="dot" data-slide="2"></span>
+            </div>
+            
+            <!-- Navigation Arrows -->
+            <button class="slideshow-arrow prev-arrow">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slideshow-arrow next-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </section>
 
-    <!-- Slides Section -->
-    <section id="slides" class="slides-section">
-        <h2><i class="fas fa-images"></i> Our Gallery</h2>
-        <p>Take a look at our campus and activities</p>
-        
-        <div id="loading" class="loading">Loading slides...</div>
-        <div id="error" class="error"></div>
-        
-        <div id="slides-container" class="slides-container">
-            <!-- Slides will be loaded here -->
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">Why Choose Malumbo Academy?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Expert Faculty</h3>
+                    <p>Learn from highly qualified and experienced educators committed to your success.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Modern Curriculum</h3>
+                    <p>Cutting-edge courses designed to meet the demands of today's job market.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Community Focus</h3>
+                    <p>Join a supportive community that fosters collaboration and growth.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3>Proven Results</h3>
+                    <p>95% of our graduates secure employment or further education within 6 months.</p>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- About Section -->
     <section id="about" class="about-section">
-        <h2><i class="fas fa-school"></i> About Us</h2>
-        <p>Malumbo Academy is dedicated to providing quality education to students of all ages. Our mission is to empower students with knowledge and skills for the future through innovative teaching methods and state-of-the-art facilities.</p>
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">About Malumbo Academy</h2>
+                    <p>Established in 2023, Malumbo Academy is a premier educational institution dedicated to providing exceptional learning experiences that empower students to reach their full potential.</p>
+                    
+                    <div class="stats-grid">
+                        <div class="stat">
+                            <h3>500+</h3>
+                            <p>Students Enrolled</p>
+                        </div>
+                        <div class="stat">
+                            <h3>50+</h3>
+                            <p>Expert Faculty</p>
+                        </div>
+                        <div class="stat">
+                            <h3>25+</h3>
+                            <p>Courses Offered</p>
+                        </div>
+                        <div class="stat">
+                            <h3>95%</h3>
+                            <p>Success Rate</p>
+                        </div>
+                    </div>
+                    
+                    <p>Our mission is to cultivate intellectual curiosity, foster creativity, and develop leadership skills in every student. We believe in a holistic approach to education that balances academic excellence with personal growth.</p>
+                    
+                    <a href="#contact" class="cta-button-secondary">Join Us Today</a>
+                </div>
+                
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80" alt="Malumbo Academy Campus">
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Courses Section -->
     <section id="courses" class="courses-section">
-        <h2><i class="fas fa-graduation-cap"></i> Our Courses</h2>
-        <div class="courses-grid">
-            <div class="course-card">
-                <i class="fas fa-laptop-code"></i>
-                <h3>Computer Science</h3>
-                <p>Learn programming, web development, and software engineering with hands-on projects.</p>
+        <div class="container">
+            <h2 class="section-title">Our Popular Courses</h2>
+            <p class="section-subtitle">Choose from a wide range of programs designed for success</p>
+            
+            <div class="courses-grid">
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w-800&q-80" alt="Computer Science">
+                        <div class="course-category">Technology</div>
+                    </div>
+                    <div class="course-content">
+                        <h3>Computer Science</h3>
+                        <p>Master programming, web development, data science, and software engineering with hands-on projects.</p>
+                        <div class="course-details">
+                            <span><i class="fas fa-clock"></i> 12 Months</span>
+                            <span><i class="fas fa-user-graduate"></i> Beginner to Advanced</span>
+                        </div>
+                        <a href="#" class="course-btn">Learn More</a>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w-800&q-80" alt="Business Administration">
+                        <div class="course-category">Business</div>
+                    </div>
+                    <div class="course-content">
+                        <h3>Business Administration</h3>
+                        <p>Develop leadership skills, strategic thinking, and entrepreneurial mindset for business success.</p>
+                        <div class="course-details">
+                            <span><i class="fas fa-clock"></i> 18 Months</span>
+                            <span><i class="fas fa-user-graduate"></i> Intermediate</span>
+                        </div>
+                        <a href="#" class="course-btn">Learn More</a>
+                    </div>
+                </div>
+                
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?w-800&q-80" alt="Engineering">
+                        <div class="course-category">Engineering</div>
+                    </div>
+                    <div class="course-content">
+                        <h3>Engineering</h3>
+                        <p>Learn civil, mechanical, and electrical engineering principles with practical applications.</p>
+                        <div class="course-details">
+                            <span><i class="fas fa-clock"></i> 24 Months</span>
+                            <span><i class="fas fa-user-graduate"></i> Advanced</span>
+                        </div>
+                        <a href="#" class="course-btn">Learn More</a>
+                    </div>
+                </div>
             </div>
-            <div class="course-card">
-                <i class="fas fa-calculator"></i>
-                <h3>Mathematics</h3>
-                <p>Advanced mathematics, problem-solving skills, and practical applications.</p>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery-section">
+        <div class="container">
+            <h2 class="section-title">Campus Gallery</h2>
+            <p class="section-subtitle">Experience our vibrant campus life and facilities</p>
+            
+            <div id="gallery-container" class="gallery-grid">
+                <!-- Gallery images will be loaded here -->
             </div>
-            <div class="course-card">
-                <i class="fas fa-flask"></i>
-                <h3>Science</h3>
-                <p>Physics, Chemistry, and Biology with modern laboratory facilities.</p>
+            
+            <div class="gallery-controls">
+                <button id="prev-gallery" class="gallery-btn">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <button id="next-gallery" class="gallery-btn">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
     <section id="contact" class="contact-section">
-        <h2><i class="fas fa-address-book"></i> Contact Us</h2>
-        <div class="contact-info">
-            <p><i class="fas fa-envelope"></i> info@malumboacademy.edu</p>
-            <p><i class="fas fa-phone"></i> +260 123 456 789</p>
-            <p><i class="fas fa-map-marker-alt"></i> 123 Education Street, Lusaka, Zambia</p>
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 class="section-title">Get in Touch</h2>
+                    <p>Ready to start your educational journey with us? Contact us today!</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h3>Visit Our Campus</h3>
+                                <p>123 Education Street, Lusaka, Zambia</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h3>Call Us</h3>
+                                <p>+260 123 456 789</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h3>Email Us</h3>
+                                <p>info@malumboacademy.edu</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h3>Office Hours</h3>
+                                <p>Mon-Fri: 8:00 AM - 5:00 PM</p>
+                                <p>Sat: 9:00 AM - 1:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Send us a Message</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" placeholder="Subject" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2023 Malumbo Academy. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="#privacy">Privacy Policy</a>
-            <a href="#terms">Terms of Service</a>
-            <a href="#sitemap">Sitemap</a>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h2>Malumbo Academy</h2>
+                    <p>Excellence in Education Since 2023</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <a href="#home">Home</a>
+                    <a href="#about">About Us</a>
+                    <a href="#courses">Courses</a>
+                    <a href="#gallery">Gallery</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter for latest updates</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Enter your email" required>
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Malumbo Academy. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Sitemap</a>
+                </div>
+            </div>
         </div>
     </footer>
 
