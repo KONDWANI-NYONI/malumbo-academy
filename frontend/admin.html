@@ -11,6 +11,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
+            min-height: 80vh;
         }
         
         .login-container {
@@ -19,7 +20,7 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             max-width: 400px;
-            margin: 5rem auto;
+            margin: 3rem auto;
         }
         
         .login-container h2 {
@@ -47,7 +48,7 @@
             font-size: 1rem;
         }
         
-        .login-btn {
+        .btn {
             width: 100%;
             background: #2c3e50;
             color: white;
@@ -57,10 +58,30 @@
             font-size: 1.1rem;
             cursor: pointer;
             transition: background 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
         }
         
-        .login-btn:hover {
+        .btn:hover {
             background: #1a252f;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
         }
         
         #login-error {
@@ -79,22 +100,6 @@
             border-bottom: 2px solid #eee;
         }
         
-        .logout-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .logout-btn:hover {
-            background: #c0392b;
-        }
-        
         .admin-section {
             background: white;
             padding: 2rem;
@@ -108,6 +113,9 @@
             margin-bottom: 1.5rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .add-slide-form {
@@ -119,26 +127,87 @@
             margin-top: 1rem;
         }
         
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #666;
-            background: #f8f9fa;
+        .slide-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
             border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.2s;
+        }
+        
+        .slide-item:hover {
+            transform: translateX(5px);
+            border-color: #3498db;
+        }
+        
+        .slide-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .slide-info {
+            flex: 1;
+        }
+        
+        .slide-info h4 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        
+        .slide-info p {
+            margin: 0 0 5px 0;
+            color: #666;
+        }
+        
+        .slide-info small {
+            color: #999;
         }
         
         .back-link {
-            display: inline-block;
-            margin-top: 2rem;
-            color: #3498db;
-            text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 5px;
+            color: #3498db;
+            text-decoration: none;
+            margin-top: 2rem;
         }
         
         .back-link:hover {
             text-decoration: underline;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
     </style>
 </head>
@@ -151,7 +220,7 @@
     </nav>
 
     <div class="admin-container">
-        <!-- Login Form (Initially Visible) -->
+        <!-- Login Form -->
         <div id="login-container">
             <div class="login-container">
                 <h2><i class="fas fa-lock"></i> Admin Login</h2>
@@ -159,7 +228,7 @@
                     <div class="form-group">
                         <label for="username"><i class="fas fa-user"></i> Username</label>
                         <input type="text" id="username" name="username" required 
-                               placeholder="Enter admin username" value="admin">
+                               placeholder="Enter username" value="admin">
                     </div>
                     
                     <div class="form-group">
@@ -168,11 +237,11 @@
                                placeholder="Enter password" value="admin123">
                     </div>
                     
-                    <button type="submit" class="login-btn">
+                    <button type="submit" class="btn">
                         <i class="fas fa-sign-in-alt"></i> Login
                     </button>
                     
-                    <div id="login-error"></div>
+                    <div id="login-error" class="message"></div>
                 </form>
                 
                 <a href="index.html" class="back-link">
@@ -180,7 +249,7 @@
                 </a>
                 
                 <div style="margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
-                    <p style="color: #666; font-size: 0.9rem;">
+                    <p style="color: #666; font-size: 0.9rem; text-align: center;">
                         <strong>Default Credentials:</strong><br>
                         Username: <code>admin</code><br>
                         Password: <code>admin123</code>
@@ -189,14 +258,14 @@
             </div>
         </div>
 
-        <!-- Admin Panel (Initially Hidden) -->
+        <!-- Admin Panel (Hidden by default) -->
         <div id="admin-panel" style="display: none;">
             <div class="admin-header">
                 <div>
                     <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
                     <p id="admin-welcome">Welcome, Admin!</p>
                 </div>
-                <button id="logout-btn" class="logout-btn">
+                <button id="logout-btn" class="btn btn-danger">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
@@ -221,14 +290,15 @@
                     
                     <div class="form-group">
                         <label for="slide-description">Description</label>
-                        <textarea id="slide-description" rows="3" 
-                                  placeholder="Enter slide description (optional)"
-                                  style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-family: inherit;"></textarea>
+                        <textarea id="slide-description" 
+                                  placeholder="Enter slide description (optional)"></textarea>
                     </div>
                     
-                    <button type="submit" class="login-btn" style="background: #27ae60;">
+                    <button type="submit" class="btn btn-success">
                         <i class="fas fa-save"></i> Add Slide
                     </button>
+                    
+                    <div id="form-message" class="message"></div>
                 </form>
             </div>
 
@@ -238,10 +308,7 @@
                 <p>Total slides: <span id="slides-count">0</span></p>
                 
                 <div id="slides-list" class="slides-list">
-                    <div class="empty-state">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                        <p>Loading slides...</p>
-                    </div>
+                    <div class="loading">Loading slides...</div>
                 </div>
             </div>
             
