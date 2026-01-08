@@ -112,23 +112,33 @@ app.post('/api/admin/slides', (req, res) => {
 });
 
 // Delete slide
-app.delete('/api/admin/slides/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const initialLength = slides.length;
-  
-  slides = slides.filter(slide => slide.id !== id);
-  
-  if (slides.length < initialLength) {
-    res.json({
-      success: true,
-      message: 'Slide deleted successfully'
-    });
-  } else {
-    res.status(404).json({
-      success: false,
-      message: 'Slide not found'
-    });
-  }
+// Delete slide endpoint (should be in your backend)
+app.delete('/api/admin/slides/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // If using in-memory database
+        const initialLength = slides.length;
+        slides = slides.filter(slide => slide.id !== parseInt(id));
+        
+        if (slides.length < initialLength) {
+            res.json({
+                success: true,
+                message: 'Slide deleted successfully'
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'Slide not found'
+            });
+        }
+    } catch (error) {
+        console.error('Error deleting slide:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to delete slide' 
+        });
+    }
 });
 
 // Serve frontend files (for combined deployment)
