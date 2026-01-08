@@ -1,22 +1,17 @@
 {
-  "name": "malumbo-academy-backend",
+  "name": "malumbo-academy-api",
   "version": "1.0.0",
-  "description": "Backend API for Malumbo Christian Academy website",
+  "description": "Backend API for Malumbo Academy",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "render-build": "npm install"
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
-    "jsonwebtoken": "^9.0.0",
-    "pg": "^8.11.0",
-    "dotenv": "^16.0.3"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
+    "pg": "^8.11.3",
+    "dotenv": "^16.3.1"
   },
   "engines": {
     "node": ">=14.0.0"
