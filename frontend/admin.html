@@ -3,467 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Malumbo Christian Academy</title>
+    <title>Admin Panel - Malumbo Academy</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .admin-container {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        .admin-header {
-            background-color: #1a365d;
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .admin-sidebar {
-            background-color: #1a365d;
-            color: white;
-            width: 250px;
-            padding: 20px 0;
-            min-height: calc(100vh - 70px);
-        }
-        
-        .admin-main {
-            flex: 1;
-            background-color: #f1f5f9;
-            padding: 30px;
-            min-height: calc(100vh - 70px);
-        }
-        
-        .admin-card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        
-        .admin-table th,
-        .admin-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .admin-table th {
-            background-color: #f7fafc;
-            font-weight: 600;
-            color: #1a365d;
-        }
-        
-        .admin-table tr:hover {
-            background-color: #f7fafc;
-        }
-        
-        .action-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            margin-right: 5px;
-            transition: all 0.3s;
-        }
-        
-        .edit-btn {
-            background-color: #4299e1;
-            color: white;
-        }
-        
-        .edit-btn:hover {
-            background-color: #3182ce;
-        }
-        
-        .delete-btn {
-            background-color: #f56565;
-            color: white;
-        }
-        
-        .delete-btn:hover {
-            background-color: #e53e3e;
-        }
-        
-        .logout-btn {
-            background-color: #f56565;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
-        
-        .logout-btn:hover {
-            background-color: #e53e3e;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
         }
         
         .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f1f5f9;
-        }
-        
-        .login-box {
-            background-color: white;
-            padding: 40px;
+            background: white;
+            padding: 3rem;
             border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            width: 100%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             max-width: 400px;
+            margin: 5rem auto;
         }
         
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .stat-card {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
+        .login-container h2 {
+            color: #2c3e50;
+            margin-bottom: 2rem;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
         }
         
-        .stat-card:hover {
-            transform: translateY(-5px);
+        .form-group {
+            margin-bottom: 1.5rem;
         }
         
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 10px 0;
-        }
-        
-        .stat-label {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .form-row .form-group {
-            flex: 1;
-        }
-        
-        .admin-sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .admin-sidebar li {
-            margin-bottom: 5px;
-        }
-        
-        .admin-sidebar a {
+        .form-group label {
             display: block;
-            color: #cbd5e0;
-            text-decoration: none;
-            padding: 12px 20px;
-            transition: all 0.3s;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: bold;
         }
         
-        .admin-sidebar a:hover,
-        .admin-sidebar a.active {
-            background-color: rgba(255,255,255,0.1);
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .login-btn {
+            width: 100%;
+            background: #2c3e50;
             color: white;
-            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
         }
         
-        .admin-sidebar i {
-            margin-right: 10px;
-            width: 20px;
+        .login-btn:hover {
+            background: #1a252f;
+        }
+        
+        #login-error {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 5px;
             text-align: center;
         }
         
-        .admin-tab {
-            display: none;
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
         }
         
-        .admin-tab:first-child {
-            display: block;
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        
+        .admin-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .admin-section h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .add-slide-form {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .slides-list {
+            margin-top: 1rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #3498db;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <!-- Login Screen (shown by default) -->
-    <div id="loginScreen" class="login-container">
-        <div class="login-box">
-            <h2 style="text-align: center; color: var(--primary); margin-bottom: 30px;">
-                <i class="fas fa-user-shield"></i> Admin Login
-            </h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginUsername">Username</label>
-                    <input type="text" id="loginUsername" required>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <h1>Malumbo Academy Admin</h1>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <!-- Login Form (Initially Visible) -->
+        <div id="login-container">
+            <div class="login-container">
+                <h2><i class="fas fa-lock"></i> Admin Login</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="username" name="username" required 
+                               placeholder="Enter admin username" value="admin">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-key"></i> Password</label>
+                        <input type="password" id="password" name="password" required 
+                               placeholder="Enter password" value="admin123">
+                    </div>
+                    
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    
+                    <div id="login-error"></div>
+                </form>
+                
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Main Site
+                </a>
+                
+                <div style="margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                    <p style="color: #666; font-size: 0.9rem;">
+                        <strong>Default Credentials:</strong><br>
+                        Username: <code>admin</code><br>
+                        Password: <code>admin123</code>
+                    </p>
                 </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" required>
+            </div>
+        </div>
+
+        <!-- Admin Panel (Initially Hidden) -->
+        <div id="admin-panel" style="display: none;">
+            <div class="admin-header">
+                <div>
+                    <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+                    <p id="admin-welcome">Welcome, Admin!</p>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    <span id="loginText">Login</span>
-                    <div class="spinner small" id="loginSpinner" style="display: none;"></div>
+                <button id="logout-btn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
-                <div id="loginMessage" style="display: none; margin-top: 15px; padding: 10px; border-radius: 5px;"></div>
-            </form>
-            <p style="margin-top: 20px; font-size: 0.9rem; color: var(--gray); text-align: center;">
-                <strong>Demo Credentials:</strong><br>
-                Username: admin<br>
-            </p>
-        </div>
-    </div>
-    
-    <!-- Admin Panel (hidden by default) -->
-    <div id="adminPanel" style="display: none;">
-        <div class="admin-header">
-            <h2><i class="fas fa-user-shield"></i> Admin Dashboard</h2>
-            <button class="logout-btn" id="logoutBtn">Logout</button>
-        </div>
-        
-        <div class="admin-container">
-            <div class="admin-sidebar">
-                <ul>
-                    <li><a href="#" class="active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="#" data-tab="manage-slides"><i class="fas fa-images"></i> Manage Slideshow</a></li>
-                    <li><a href="#" data-tab="manage-events"><i class="fas fa-calendar-alt"></i> Manage Events</a></li>
-                    <li><a href="#" data-tab="manage-gallery"><i class="fas fa-camera"></i> Manage Gallery</a></li>
-                    <li><a href="#" data-tab="manage-messages"><i class="fas fa-envelope"></i> Messages</a></li>
-                    <li><a href="#" data-tab="settings"><i class="fas fa-cog"></i> Settings</a></li>
-                </ul>
+            </div>
+
+            <!-- Add Slide Form -->
+            <div class="admin-section">
+                <h3><i class="fas fa-plus-circle"></i> Add New Slide</h3>
+                <form id="add-slide-form" class="add-slide-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="slide-title">Slide Title *</label>
+                            <input type="text" id="slide-title" required 
+                                   placeholder="Enter slide title">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="slide-image">Image URL *</label>
+                            <input type="url" id="slide-image" required 
+                                   placeholder="https://example.com/image.jpg">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="slide-description">Description</label>
+                        <textarea id="slide-description" rows="3" 
+                                  placeholder="Enter slide description (optional)"
+                                  style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-family: inherit;"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="login-btn" style="background: #27ae60;">
+                        <i class="fas fa-save"></i> Add Slide
+                    </button>
+                </form>
+            </div>
+
+            <!-- Slides List -->
+            <div class="admin-section">
+                <h3><i class="fas fa-images"></i> Manage Slides</h3>
+                <p>Total slides: <span id="slides-count">0</span></p>
+                
+                <div id="slides-list" class="slides-list">
+                    <div class="empty-state">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>Loading slides...</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="admin-main">
-                <!-- Dashboard Tab -->
-                <div class="admin-tab" id="dashboard">
-                    <h2>Welcome, Administrator</h2>
-                    <p>Use the sidebar to manage different sections of the website.</p>
-                    
-                    <div class="stats-grid" id="statsGrid">
-                        <!-- Stats loaded dynamically -->
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            <p>Loading statistics...</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Manage Slideshow Tab -->
-                <div class="admin-tab" id="manage-slides" style="display: none;">
-                    <div class="admin-card">
-                        <h3><i class="fas fa-plus"></i> Add New Slide</h3>
-                        <form id="addSlideForm">
-                            <div class="form-group">
-                                <label for="slideImageUrl">Image URL *</label>
-                                <input type="text" id="slideImageUrl" placeholder="https://example.com/image.jpg" required>
-                                <small>Enter a direct link to the image you want to use for the slide.</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="slideTitle">Slide Title *</label>
-                                <input type="text" id="slideTitle" placeholder="Welcome to New School Year" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="slideDescription">Slide Description</label>
-                                <textarea id="slideDescription" placeholder="Brief description for the slide"></textarea>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="slideOrder">Display Order</label>
-                                    <input type="number" id="slideOrder" value="0" min="0">
-                                </div>
-                                <div class="form-group">
-                                    <label for="slideActive">
-                                        <input type="checkbox" id="slideActive" checked> Active
-                                    </label>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <span id="addSlideText">Add Slide</span>
-                                <div class="spinner small" id="addSlideSpinner" style="display: none;"></div>
-                            </button>
-                        </form>
-                    </div>
-                    
-                    <div class="admin-card">
-                        <h3><i class="fas fa-list"></i> Current Slides</h3>
-                        <div id="slidesList">
-                            <!-- Slides loaded dynamically -->
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                <p>Loading slides...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Manage Events Tab -->
-                <div class="admin-tab" id="manage-events" style="display: none;">
-                    <div class="admin-card">
-                        <h3><i class="fas fa-plus"></i> Add New Event</h3>
-                        <form id="addEventForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="eventTitle">Event Title *</label>
-                                    <input type="text" id="eventTitle" placeholder="Graduation Ceremony" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="eventDate">Event Date *</label>
-                                    <input type="date" id="eventDate" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="eventDescription">Event Description *</label>
-                                <textarea id="eventDescription" placeholder="Details about the event" required></textarea>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="eventTime">Event Time</label>
-                                    <input type="text" id="eventTime" placeholder="10:00 AM - 2:00 PM">
-                                </div>
-                                <div class="form-group">
-                                    <label for="eventLocation">Event Location</label>
-                                    <input type="text" id="eventLocation" placeholder="School Auditorium">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="eventPublished">
-                                    <input type="checkbox" id="eventPublished" checked> Published
-                                </label>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <span id="addEventText">Add Event</span>
-                                <div class="spinner small" id="addEventSpinner" style="display: none;"></div>
-                            </button>
-                        </form>
-                    </div>
-                    
-                    <div class="admin-card">
-                        <h3><i class="fas fa-list"></i> Current Events</h3>
-                        <div id="eventsList">
-                            <!-- Events loaded dynamically -->
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                <p>Loading events...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Manage Gallery Tab -->
-                <div class="admin-tab" id="manage-gallery" style="display: none;">
-                    <div class="admin-card">
-                        <h3><i class="fas fa-plus"></i> Add Gallery Image</h3>
-                        <form id="addGalleryForm">
-                            <div class="form-group">
-                                <label for="galleryImageUrl">Image URL *</label>
-                                <input type="text" id="galleryImageUrl" placeholder="https://example.com/gallery-image.jpg" required>
-                                <small>Enter a direct link to the image you want to add to the gallery.</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="galleryCaption">Image Caption (Optional)</label>
-                                <input type="text" id="galleryCaption" placeholder="School Science Fair 2023">
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="galleryCategory">Category</label>
-                                    <select id="galleryCategory">
-                                        <option value="general">General</option>
-                                        <option value="campus">Campus</option>
-                                        <option value="activities">Activities</option>
-                                        <option value="events">Events</option>
-                                        <option value="students">Students</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="galleryFeatured">
-                                        <input type="checkbox" id="galleryFeatured"> Featured
-                                    </label>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <span id="addGalleryText">Add to Gallery</span>
-                                <div class="spinner small" id="addGallerySpinner" style="display: none;"></div>
-                            </button>
-                        </form>
-                    </div>
-                    
-                    <div class="admin-card">
-                        <h3><i class="fas fa-images"></i> Gallery Images</h3>
-                        <div id="galleryList">
-                            <!-- Gallery loaded dynamically -->
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                <p>Loading gallery...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Manage Messages Tab -->
-                <div class="admin-tab" id="manage-messages" style="display: none;">
-                    <div class="admin-card">
-                        <h3><i class="fas fa-envelope"></i> Contact Messages</h3>
-                        <div id="messagesList">
-                            <!-- Messages loaded dynamically -->
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                <p>Loading messages...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Settings Tab -->
-                <div class="admin-tab" id="settings" style="display: none;">
-                    <div class="admin-card">
-                        <h3><i class="fas fa-cog"></i> Admin Settings</h3>
-                        <form id="adminSettingsForm">
-                            <div class="form-group">
-                                <label for="adminUsername">Admin Username</label>
-                                <input type="text" id="adminUsername" value="admin" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="adminPassword">Change Password</label>
-                                <input type="password" id="adminPassword" placeholder="Leave blank to keep current">
-                            </div>
-                            <div class="form-group">
-                                <label for="confirmPassword">Confirm New Password</label>
-                                <input type="password" id="confirmPassword">
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <span id="saveSettingsText">Save Changes</span>
-                                <div class="spinner small" id="saveSettingsSpinner" style="display: none;"></div>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Main Site
+            </a>
         </div>
     </div>
 

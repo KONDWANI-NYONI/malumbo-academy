@@ -9,10 +9,10 @@ async function loadSlides() {
         loading.textContent = 'Loading slides...';
         error.textContent = '';
         
-        const response = await fetch(\`\${API_BASE_URL}/slides\`);
+        const response = await fetch(`${API_BASE_URL}/slides`);
         
         if (!response.ok) {
-            throw new Error(\`API Error: \${response.status}\`);
+            throw new Error(`API Error: ${response.status}`);
         }
         
         const slides = await response.json();
@@ -22,20 +22,29 @@ async function loadSlides() {
             return;
         }
         
-        container.innerHTML = slides.map(slide => \`
+        container.innerHTML = slides.map(slide => `
             <div class="slide">
-                <img src="\${slide.image_url}" alt="\${slide.title}">
-                <h3>\${slide.title}</h3>
-                <p>\${slide.description}</p>
+                <img src="${slide.image_url}" alt="${slide.title}">
+                <h3>${slide.title}</h3>
+                <p>${slide.description}</p>
             </div>
-        \`).join('');
+        `).join('');
         
         loading.textContent = '';
         
     } catch (err) {
         console.error('Error:', err);
         loading.textContent = '';
-        error.textContent = \`Failed to load slides. Error: \${err.message}\`;
+        error.textContent = `Failed to load slides. Error: ${err.message}`;
+        
+        // Fallback: show error message with retry button
+        container.innerHTML = `
+            <div class="error-state">
+                <p>⚠️ Unable to load slides</p>
+                <button onclick="loadSlides()">Retry</button>
+                <p>API URL: ${API_BASE_URL}/slides</p>
+            </div>
+        `;
     }
 }
 
